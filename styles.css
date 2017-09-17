@@ -1,0 +1,9 @@
+.container {
+  min-height: 100vh;
+}
+
+input[type="datetime-local"] {
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
+}
