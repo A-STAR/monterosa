@@ -10,8 +10,6 @@ input[type="datetime-local"] {
 
 input[type="checkbox"] {
   position: relative;
-  top: 3px;
-  left: 0px;
   visibility: hidden;
   width: 1.16125rem;
   height: 1.25rem;
@@ -21,6 +19,8 @@ input[type="checkbox"] {
 
 input[type="checkbox"]::after {
   position: absolute;
+  top: 3px;
+  left: -2px;
   display: inline-block;
   visibility: visible;
   width: 1.16125rem;
