@@ -1,15 +1,23 @@
 class App {
 
   constructor() {
-    this.list = document.querySelector('.list-group');
-    this.select = document.querySelector('#type');
+    this.form = document.querySelector('form');
+    this.select = document.querySelector('select');
+    this.button = document.querySelector('button[type="button"]');
+    this.list = document.querySelector('ul.list-group');
+    this.checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
     this.items = [];
     this.types = [];
     this.sorted = false;
-    this.getData();
+
+    this.fetchData();
+    
+    this.form.addEventListener('submit', () => this.addItem(event));
+    this.button.addEventListener('click', () => this.toggleExpiry());
   }
   
-  async getData() {
+  async fetchData() {
     try {
       let items = fetch('http://rygorh.dev.monterosa.co.uk/todo/items.php');
       let types = fetch('http://rygorh.dev.monterosa.co.uk/todo/types.php');
@@ -19,41 +27,68 @@ class App {
       
       this.items = await items.json();
       this.types = await types.json();
-      
-      console.log(this.items);
-      console.log(this.types);
+
+      this.items = this.items
+        .map((item, index) => Object.assign(item, { id: index }));
       
       this.printData();
-      this.printTypes();
     }
     catch (error) {
       throw new Error(error);
     }
   }
-  
-  printData(data = this.items) {
+    
+  printData() {
+    this.printItems();
+    this.printTypes();
+  }
+
+  printItems(data = this.items) {
     const items = data
-      .reduce((items, item) => {
+      .reduce((items, item, index) => {
         const date = new Date(item.expires_at);
         
         const formatDate = `${ date.getHours() }:${ date.getMinutes() }:${ date.getSeconds() } ${ date.getMonth() + 1 }/${ date.getDay() + 1 }/${ date.getFullYear() }`;
-      
+
+        let type;
+
+        if (item.type) {
+          type = this.types
+            .find(type => type.id === item.type);
+        }
+
         return items += `
           <li class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
-              <span class="mr-5">${item.task}</span>
-              <small>${formatDate}</small> 
+              <span class="mr-3">
+              <input type="checkbox" class= name="${item.task}" value="${item.done}" data-id="${item.id}" ${item.done ? 'checked' : '' }>
+              </span>  
+              <span class="mr-auto text-left">
+                ${item.task}
+                ${ item.type ? `<span class="badge badge-light">${type.name}</span>` : '' }
+              </span>
+              <time class="ml-5 text-muted">${formatDate}</time>
             </div>
           </li>
         `
       }, '');
     
-    // console.log(items);
-    
     this.list
       .innerHTML = items;
+    
+    this.listenCheckboxes();
   }
-  
+
+  listenCheckboxes() {
+    this.checkboxes
+      .forEach(checkbox => checkbox.removeEventListener('change', null));
+    
+    this.checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+    this.checkboxes
+      .forEach(checkbox => checkbox.addEventListener('change', () => this.toggleDone(event)));
+  }
+
   printTypes() {
     const types = this.types
       .slice()
@@ -67,45 +102,63 @@ class App {
   addItem(event) {
     event.preventDefault();
 
-    const form = new FormData(addItem);
+    const form = new FormData(this.form);
 
     const task = form.get('task'),
-          type = form.get('type');
+          type = Number(form.get('type'));
     
     let expiry = form.get('expiry');
 
     expiry = new Date(expiry).getTime();
 
     const item = {
-      task: task,
+      id: this.items.length,
+      task,
       expires_at: expiry,
       created_at: Date.now(),
       done: false,
-      type: type
+      type
     };
 
-    console.log(item);
+    this.items
+      .unshift(item);
+
+    if (this.sorted) {
+      const items = this.sortExpiry();
+      this.printItems(items);
+    } else {
+      this.printItems();
+    }
+
+    this.form.reset();
   }
 
   toggleExpiry() {
     if (this.sorted) {
-      this.printData();
+      this.printItems();
     } else {
-      const items = this.items
-        .slice()
-        .sort((a, b) => a.expires_at - b.expires_at);
-      this.printData(items);
+      const items = this.sortExpiry();
+      this.printItems(items);
     }
-
+      
     this.sorted = !this.sorted;
+  }
+    
+  sortExpiry() {
+    return this.items
+      .slice()
+      .sort((a, b) => a.expires_at - b.expires_at);
+  }
+
+  toggleDone(event) {
+    const id = Number(event.target.dataset.id);
+
+    const index = this.items
+      .findIndex(element => element.id === id);
+    
+    this.items[index].done = !this.items[index].done;
   }
 
 }
 
-const addItem = document.querySelector('.add-item');
-const toggleExpiry = document.querySelector('.toggle-expiry');
-
 const app = new App();
-
-addItem.addEventListener('submit', () => app.addItem(event));
-toggleExpiry.addEventListener('click', () => app.toggleExpiry());

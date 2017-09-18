@@ -7,3 +7,34 @@ input[type="datetime-local"] {
   width: auto;
   max-width: 100%;
 }
+
+input[type="checkbox"] {
+  visibility: hidden;
+}
+
+input[type="checkbox"]::before {
+  position: relative;
+  top: -7px;
+  left: -3px;
+  display: inline-block;
+  width: .8125rem;
+  height: .8125rem;
+  color: #868e96;
+  font-size: 1.25rem;
+  font-family: FontAwesome;
+  content: "\f096";
+  visibility: visible;
+}
+
+input[type="checkbox"]:checked {
+  visibility: hidden;
+}
+
+input[type="checkbox"]:checked::before {
+  content: "\f046";
+  color: #28a745;
+}
+
+time {
+  font-size: 85%;
+}

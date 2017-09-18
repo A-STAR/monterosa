@@ -6,6 +6,7 @@
   <title>Monterosa</title>
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,27 +14,27 @@
   <div class="container d-flex flex-wrap justify-content-center py-5">
     
     <div class="d-flex flex-wrap justify-content-center w-100">
-      <form class="mb-4 add-item">
-        <div class="form-row justify-content-center align-items-center mb-4">
+      <form class="mb-4">
+        <div class="form-row justify-content-center align-items-center">
           <div class="col-auto">
             <label class="sr-only" for="task">Task</label>
-            <input type="text" class="form-control mb-2" id="task" name="task" placeholder="Feed the cat">
+            <input type="text" class="form-control mb-4" id="task" name="task" placeholder="Feed the cat">
           </div>
           <div class="col-auto">
             <label class="sr-only" for="Type">Type</label>
-            <select class="custom-select mb-2" id="type" name="type">
+            <select class="custom-select mb-4" id="type" name="type">
               <option selected>Type…</option>
             </select>
           </div>
           <div class="col-auto">
             <label for="Expiry">Expiry</label>
-            <input type="datetime-local" class="form-control mb-2 ml-2" id="Expiry" name="expiry" value="2018-09-13T08:30">
+            <input type="datetime-local" class="form-control mb-4 ml-2" id="Expiry" name="expiry" value="2018-09-13T08:30">
           </div>
         </div>
 
         <div class="d-flex justify-content-center w-100">
-          <button class="btn btn-primary mr-2 toggle-expiry">Toggle Expiry</button>
-          <button type="submit" class="btn btn-primary">Add Item</button>
+          <button type="button" class="btn btn-light mr-2">Toggle Expiry</button>
+          <button type="submit" class="btn btn-info">Add Item</button>
         </div>
 
       </form>
